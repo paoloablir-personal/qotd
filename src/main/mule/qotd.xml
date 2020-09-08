@@ -19,7 +19,6 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
         <logger message="Main Flow Start" level="INFO" doc:name="Log Main Flow Start" />
 
         <logger message='#["Hello " ++ attributes.uriParams.requestor]' level="INFO" doc:name="Log Hello requestor" />
-		<logger level="INFO" doc:name="Logger" doc:id="58fe6afe-e73a-43a6-bd29-e97ff39f31d0" message="TESTING"/>
 		<flow-ref name="get-qotd:subflow" target="qotd" doc:name="get-qotd:subflow"/>
 
         <ee:transform doc:name="Set Response">
