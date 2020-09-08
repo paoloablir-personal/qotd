@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<http:listener-config name="HTTP_Listener_Configuration" doc:name="HTTP Listener Configuration">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+	
+	<flow name="qotd:flow" doc:id="c40427e8-7ad3-40d7-9384-c43a1f4f5b45">
+		<http:listener config-ref="HTTP_Listener_Configuration" path="${http.api.qotd.path}" allowedMethods="GET" doc:name="HTTP">
+            
+        </http:listener>
+
+        <logger message="Main Flow Start" level="INFO" doc:name="Log Main Flow Start" />
+
+        <logger message='#["Hello " ++ attributes.uriParams.requestor]' level="INFO" doc:name="Log Hello requestor" />
+		<flow-ref name="get-qotd:subflow" target="qotd" doc:name="get-qotd:subflow"/>
+
+        <ee:transform doc:name="Set Response">
+            <ee:message>
+                <ee:set-payload>%dw 2.0
+output application/json  
+---
+{
+  quote: vars.qotd.contents.quotes[0].quote,
+  author: vars.qotd.contents.quotes[0].author
+}</ee:set-payload>
+            </ee:message>
+        </ee:transform>
+
+        <logger message="Main Flow End" level="INFO" doc:name="Log Main Flow End" />
+	</flow>
+	
+	<sub-flow name="get-qotd:subflow">
+        <logger message="Get QOTD Start" level="INFO" doc:name="Log Get QOTD Start" />
+        <http:request config-ref="HTTP_Request_Configuration" path="${http.qotd.path}" method="GET" doc:name="HTTP GET QOTD">
+            
+        </http:request>
+        <logger message="QOTD End" level="INFO" doc:name="Log QOTD End" />
+    </sub-flow>
+</mule>
