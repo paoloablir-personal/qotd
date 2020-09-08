@@ -40,7 +40,7 @@
 					<password>P@ssw0rd123</password>
 					<muleVersion>4.3.0</muleVersion>
 				</cloudHubDeployment>
-				<objectStoreV2>true</objectStoreV2>
+				<objectStoreV1>false</objectStoreV1>
 				</configuration>
 			</plugin>
 		</plugins>
